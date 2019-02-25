@@ -45,10 +45,6 @@ class Tasks extends Component {
     return pages;
   };
 
-  editTask = id => {
-    console.log(id);
-  };
-
   renderRow = item => {
     const { id, username, email, status, text } = item;
     const { isLogged, history } = this.props;
@@ -100,47 +96,46 @@ class Tasks extends Component {
     } = this.props;
 
     if (error) return <Wrapper>Error</Wrapper>;
-    {
-      return loading ? (
-        <Wrapper>loading...</Wrapper>
-      ) : (
-        <Wrapper>
-          <TableTitle>Tasks</TableTitle>
-          <Table className="table">
-            <TableHead>
-              <TableTR>
-                <TableTH>#</TableTH>
-                <TableTH
-                  onClick={() => {
-                    this.sorting('username');
-                  }}
-                >
-                  Username
-                </TableTH>
-                <TableTH
-                  onClick={() => {
-                    this.sorting('email');
-                  }}
-                >
-                  Email
-                </TableTH>
-                <TableTH
-                  onClick={() => {
-                    this.sorting('status');
-                  }}
-                >
-                  Status
-                </TableTH>
-                <TableTH>Text</TableTH>
-                {isLogged ? <TableTH>Action</TableTH> : null}
-              </TableTR>
-            </TableHead>
-            <TableBody>{tasks.tasks.map(this.renderRow)}</TableBody>
-          </Table>
-          <Pagination>{this.renderPagination(Math.ceil(tasks.total_task_count / 3))}</Pagination>
-        </Wrapper>
-      );
-    }
+
+    return loading ? (
+      <Wrapper>loading...</Wrapper>
+    ) : (
+      <Wrapper>
+        <TableTitle>Tasks</TableTitle>
+        <Table className="table">
+          <TableHead>
+            <TableTR>
+              <TableTH>#</TableTH>
+              <TableTH
+                onClick={() => {
+                  this.sorting('username');
+                }}
+              >
+                Username
+              </TableTH>
+              <TableTH
+                onClick={() => {
+                  this.sorting('email');
+                }}
+              >
+                Email
+              </TableTH>
+              <TableTH
+                onClick={() => {
+                  this.sorting('status');
+                }}
+              >
+                Status
+              </TableTH>
+              <TableTH>Text</TableTH>
+              {isLogged ? <TableTH>Action</TableTH> : null}
+            </TableTR>
+          </TableHead>
+          <TableBody>{tasks.tasks.map(this.renderRow)}</TableBody>
+        </Table>
+        <Pagination>{this.renderPagination(Math.ceil(tasks.total_task_count / 3))}</Pagination>
+      </Wrapper>
+    );
   }
 }
 
@@ -189,7 +184,3 @@ const TableButton = styled.button`
   }
 `;
 const TableButtonIcon = styled.i``;
-const TableTotal = styled.div`
-  font-size: 25px;
-  text-align: right;
-`;

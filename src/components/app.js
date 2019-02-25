@@ -21,7 +21,6 @@ const App = () => {
           path="/edit/:id"
           render={({ match }) => {
             const { id } = match.params;
-            console.log(match);
             return <Edit id={id} />;
           }}
           exact
