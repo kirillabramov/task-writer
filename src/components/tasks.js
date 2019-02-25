@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { withRouter } from 'react-router-dom';
 import { Wrapper } from './form';
 import { fetchTasks } from '../actions';
 
@@ -11,9 +12,13 @@ class Tasks extends Component {
       tasks: PropTypes.instanceOf(Object),
       loading: PropTypes.bool.isRequired,
       error: PropTypes.bool.isRequired,
-      fetchTasks: PropTypes.func
+      fetchTasks: PropTypes.func,
+      isLogged: PropTypes.bool.isRequired,
+      history: PropTypes.instanceOf(Object)
     };
   }
+
+  isSorted = true;
 
   componentDidMount() {
     const { fetchTasks } = this.props;
@@ -40,35 +45,58 @@ class Tasks extends Component {
     return pages;
   };
 
-  renderRow = (item, idx) => {
-    const { id, username, status, text } = item;
+  editTask = id => {
+    console.log(id);
+  };
 
+  renderRow = item => {
+    const { id, username, email, status, text } = item;
+    const { isLogged, history } = this.props;
     return (
-      <TableTR key={id}>
-        <TableTD>{idx + 1}</TableTD>
+      <TableTR
+        key={id}
+        style={{
+          backgroundColor: status === 10 ? 'lightgreen' : '#eee'
+        }}
+      >
+        <TableTD>{id}</TableTD>
         <TableTD>{username}</TableTD>
+        <TableTD>{email}</TableTD>
         <TableTD>{status}</TableTD>
         <TableTD>{text}</TableTD>
-        <TableTD>
-          <TableButton className="btn btn-outline-success btn-small">
-            <TableButtonIcon className="fa fa-plus-circle" />
-          </TableButton>
-          <TableButton className="btn btn-outline-warning btn-small">
-            <TableButtonIcon className="fa fa-minus-circle" />
-          </TableButton>
-          <TableButton className="btn btn-outline-danger btn-small">
-            <TableButtonIcon className="fa fa-trash-o" />
-          </TableButton>
-        </TableTD>
+        {isLogged ? (
+          <TableTD>
+            <TableButton
+              className="btn btn-outline-warning btn-small"
+              onClick={() => {
+                history.push(`/edit/${id}`);
+              }}
+            >
+              <TableButtonIcon className="fa fa-edit" />
+            </TableButton>
+          </TableTD>
+        ) : null}
       </TableTR>
     );
+  };
+
+  sorting = field => {
+    const { fetchTasks } = this.props;
+    if (this.isSorted) {
+      fetchTasks(1, field, 'asc');
+      this.isSorted = false;
+    } else {
+      fetchTasks(1, field, 'desc');
+      this.isSorted = true;
+    }
   };
 
   render() {
     const {
       tasks: { tasks },
       loading,
-      error
+      error,
+      isLogged
     } = this.props;
 
     if (error) return <Wrapper>Error</Wrapper>;
@@ -82,10 +110,29 @@ class Tasks extends Component {
             <TableHead>
               <TableTR>
                 <TableTH>#</TableTH>
-                <TableTH>Username</TableTH>
-                <TableTH>Email</TableTH>
+                <TableTH
+                  onClick={() => {
+                    this.sorting('username');
+                  }}
+                >
+                  Username
+                </TableTH>
+                <TableTH
+                  onClick={() => {
+                    this.sorting('email');
+                  }}
+                >
+                  Email
+                </TableTH>
+                <TableTH
+                  onClick={() => {
+                    this.sorting('status');
+                  }}
+                >
+                  Status
+                </TableTH>
                 <TableTH>Text</TableTH>
-                <TableTH>Action</TableTH>
+                {isLogged ? <TableTH>Action</TableTH> : null}
               </TableTR>
             </TableHead>
             <TableBody>{tasks.tasks.map(this.renderRow)}</TableBody>
@@ -97,8 +144,8 @@ class Tasks extends Component {
   }
 }
 
-const mapStateToProps = ({ task: { tasks, loading, error } }) => {
-  return { tasks, loading, error };
+const mapStateToProps = ({ task: { tasks, loading, error, isLogged } }) => {
+  return { tasks, loading, error, isLogged };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -107,14 +154,17 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Tasks);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Tasks)
+);
 
 Tasks.defaultProps = {
   tasks: {},
-  fetchTasks: () => {}
+  fetchTasks: () => {},
+  history: {}
 };
 
 const Button = styled.button``;
@@ -123,7 +173,12 @@ const TableTitle = styled.h2``;
 
 const Table = styled.table``;
 const TableHead = styled.thead``;
-const TableTH = styled.th``;
+const TableTH = styled.th`
+  cursor: pointer;
+  &:hover {
+    color: rgba(0, 0, 0, 0.5);
+  }
+`;
 const TableBody = styled.tbody``;
 const TableTR = styled.tr``;
 const TableTD = styled.td``;

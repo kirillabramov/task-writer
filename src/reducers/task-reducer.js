@@ -1,12 +1,15 @@
-import { FETCH_TASK_ERROR, FETCH_TASK_SUCCESS, FETCH_TASK_LOADING } from './action-types';
+import {
+  FETCH_TASK_ERROR,
+  FETCH_TASK_SUCCESS,
+  FETCH_TASK_LOADING,
+  HANDLE_LOGIN
+} from './action-types';
 
 const initialState = {
   tasks: [],
   loading: true,
   error: false,
-  name: '',
-  email: '',
-  text: ''
+  isLogged: false
 };
 
 const taskReducer = (state = initialState, { type, payload }) => {
@@ -29,6 +32,11 @@ const taskReducer = (state = initialState, { type, payload }) => {
         ...state,
         loading: false,
         error: true
+      };
+    case HANDLE_LOGIN:
+      return {
+        ...state,
+        isLogged: true
       };
     default:
       return state;

@@ -8,7 +8,7 @@
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "no-shadow": [
       "error",
-      { "builtinGlobals": false, "hoist": "functions", "allow": ["fetchTasks", "sendTask"] }
+      { "builtinGlobals": false, "hoist": "functions", "allow": ["fetchTasks", "sendTask", "handleLogin", "editTask"] }
     ]
   }
 }

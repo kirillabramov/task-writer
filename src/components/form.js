@@ -22,7 +22,6 @@ class Form extends Component {
     } = this.props;
     const task = form.taskForm.values;
     sendTask(task);
-    console.log('sending...');
   };
 
   render() {
@@ -69,10 +68,10 @@ export const Wrapper = styled.div`
   flex-direction column;
 `;
 
-const TaskForm = styled.form`
+export const TaskForm = styled.form`
   display: flex;
   flex-direction: column;
   max-width: 600px;
   margin-top: 30px;
 `;
-const Button = styled.button``;
+export const Button = styled.button``;
